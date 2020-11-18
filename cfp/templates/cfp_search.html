@@ -2,9 +2,22 @@
 
 {% block content %}
 
-<h1>HomePage</h1>
+  <h1>HomePage</h1>
 
-<form action="{% url 'cfp-search-result' %}" method="get">
-  <input name="search_term" type="text" placeholder="Search...">
-</form>
+  <form action="{% url 'cfp-search' %}" method="get">
+    <input name="search_term" type="text" placeholder="Search...">
+  </form>
+
+  <p>{% if object_list %}</p>
+    <ul>
+      {% for conference in object_list %}
+        <li>
+          {{ conference.name }}, {{ conference.acronym }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+      <p>There are no conferences matching your search.</p>
+  {% endif %}
+
 {% endblock %}

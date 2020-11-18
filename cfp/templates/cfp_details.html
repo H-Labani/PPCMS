@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Title: {{ conference.name }}</h1>
+
+  <p><strong>Acronym:</strong> {{ conference.acronym }}</p>
+  <p><strong>Web page:</strong> {{ conference.web_page }}</p>
+  <p><strong>Venue:</strong> {{ conference.venue }}</p>
+  <p><strong>City:</strong> {{ conference.city }}</p>
+  <p><strong>Country:</strong> {{ conference.country }}</p>
+  <p><strong>Start date:</strong> {{ conference.start_date }}</p>
+  <p><strong>End date:</strong> {{ conference.end_date }}</p>
+  <p><strong>Submission deadline:</strong> {{ conference.submission_deadline }}</p>
+  <p><strong>phase:</strong> {{ conference.phase }}</p>
+  <p><strong>Program committee members:</strong> {{ conference.PCM }}</p>
+  <p><strong>Chair:</strong> {{ conference.chair }}</p>
+{% endblock %}
+
+    {% block sidebar_conferences %} {% endblock %}

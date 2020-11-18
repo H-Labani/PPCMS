@@ -4,13 +4,16 @@
 
 
 <h1>Search Results</h1>
-
-<ul>
-  {% for conference in object_list %}
-    <li>
-      {{ conference.name }}, {{ conference.acronym }}
-    </li>
-  {% endfor %}
-</ul>
+<p>{% if object_list %}</p>
+  <ul>
+    {% for conference in object_list %}
+      <li>
+        {{ conference.name }}, {{ conference.acronym }}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+    <p>There are no conferences matching your search.</p>
+{% endif %}
 
 {% endblock %}
