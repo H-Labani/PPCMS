@@ -13,12 +13,12 @@ class CFPView(TemplateView):
 class CFPSearchResult(ListView):
     model = Conference
     template_name = "cfp_search_result.html"
-    queryset = Conference.objects.filter(name__icontains='A', conferencecfp__cfp_active=True)
+    #queryset = ConferenceCFP.objects.filter(conference_id__name__icontains='A')
+    #queryset = Conference.objects.filter(name__icontains=self.request.GET.get('search_term'), cfp__cfp_active=True)
+    #queryset = queryset.
     #get_list_or_404(Conference,
                                           #conferencecfp__cfp_active=True,
                                           #name="TestCon" )
-    def search_cfp(self):
-        conference_list = get_list_or_404(Conference,
-                                          ConferenceCFP__cfp_active=True,
-                                          name=self.request.GET.get('search_term'))
-        return conference_list
+    def get_queryset(self):
+        queryset = Conference.objects.filter(name__icontains=self.request.GET.get('search_term'), cfp__cfp_active=True)
+        return queryset
