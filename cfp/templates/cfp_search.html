@@ -1,0 +1,10 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<h1>HomePage</h1>
+
+<form action="{% url 'cfp-search-result' %}" method="get">
+  <input name="search_term" type="text" placeholder="Search...">
+</form>
+{% endblock %}

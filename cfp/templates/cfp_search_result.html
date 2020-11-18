@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+
+<h1>Search Results</h1>
+
+<ul>
+  {% for conference in object_list %}
+    <li>
+      {{ conference.name }}, {{ conference.acronym }}
+    </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
