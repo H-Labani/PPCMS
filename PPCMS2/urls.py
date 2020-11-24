@@ -21,7 +21,7 @@ from django.conf import settings
 
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='account/', permanent=True)),
+    path('', RedirectView.as_view(url='account/login', permanent=False)),
     path('admin/', admin.site.urls),
     path('conference/', include('conference.urls')),
     path('account/', include('account.urls')),

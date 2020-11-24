@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'conference',
     'account',
     'cfp',
+    'guardian',
 ]
 
 MIDDLEWARE = [
@@ -134,4 +135,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 AUTH_USER_MODEL = 'account.CustomUser' # new
 
-AUTHENTICATION_BACKENDS = ['account.backend.EmailBackend'] # new
+#AUTHENTICATION_BACKENDS = ['account.backend.EmailBackend'] # new
+
+AUTHENTICATION_BACKENDS = (
+    'account.backend.EmailBackend', # this is a modified backend making email the log in credintial along with a password.
+    'guardian.backends.ObjectPermissionBackend',
+)

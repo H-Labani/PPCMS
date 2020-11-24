@@ -15,7 +15,6 @@ class Conference(models.Model):
     country = models.CharField(max_length=200, help_text="Enter the country/region of the conference", default="") # Location
     start_date = models.DateField(help_text="Enter the start date of the conference", default=date.today, blank=True) # The conference data
     end_date = models.DateField(help_text="Enter the end date of the conference", default=date.today, blank=True) # The conference data
-    #submission_deadline = models.DateField(help_text="Enter the submission deadline of the conference", blank= True, null=True) # The paper submission deadline
     phase = models.CharField(max_length=100, blank= True, default="")
     PCM = models.ManyToManyField(CustomUser, related_name="conference_PCM", blank=True, default="")
     chair = models.ForeignKey(CustomUser, on_delete=models.RESTRICT, related_name="conference_chair", default=1)

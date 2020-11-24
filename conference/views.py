@@ -6,13 +6,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
+from guardian.shortcuts import assign_perm, get_objects_for_user, get_objects_for_group
+from django.contrib.auth.models import Group
 
 
 @login_required
 def index(request):
 
     # List the conferences
-    conferences_list = Conference.objects.all()
+    conferences_list = get_objects_for_user(request.user, 'conference.view_conference')
     # Create context
     context= {
         'conferences_list': conferences_list,
@@ -25,6 +27,10 @@ def index(request):
 class ConferenceDetailView(LoginRequiredMixin ,generic.DetailView):
     model = Conference
 
+    def get_queryset(self):
+        queryset = get_objects_for_user(self.request.user, 'conference.view_conference')
+        return queryset
+
 
 # Create a new conference
 class ConferenceCreate(LoginRequiredMixin, CreateView):
@@ -35,6 +41,12 @@ class ConferenceCreate(LoginRequiredMixin, CreateView):
         candidate = form.save(commit=False)
         candidate.chair = self.request.user
         candidate.save()
+        group_name = 'PCM_' + str(candidate.CID)
+        group = Group.objects.create(name=group_name)
+        assign_perm('view_conference', group, candidate)
+        self.request.user.groups.add(Group.objects.get(name=group_name))
+        assign_perm('delete_conference',self.request.user, candidate)
+        assign_perm('change_conference',self.request.user, candidate)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
