@@ -10,9 +10,9 @@ class CFPView(ListView):
 
     def get_queryset(self):
         if(not self.request.GET.get('search_term')):
-            queryset = Conference.objects.filter(cfp__cfp_active=True)
+            queryset = ConferenceCFP.objects.filter(cfp_active=True)
         else:
-            queryset = Conference.objects.filter(name__icontains=self.request.GET.get('search_term'), cfp__cfp_active=True)
+            queryset = ConferenceCFP.objects.filter(conference_id__name__icontains=self.request.GET.get('search_term'), cfp_active=True)
         return queryset
 
 

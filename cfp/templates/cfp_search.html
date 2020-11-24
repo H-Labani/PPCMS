@@ -9,13 +9,22 @@
   </form>
 
   <p>{% if object_list %}</p>
-    <ul>
+    <table border="1" width="fixed">
+      <tr>
+        <th width="200px" style="text-align:center">Acronym</th>
+        <th width="600px" style="text-align:center">Name</th>
+        <th width="300px" style="text-align:center">Location</th>
+        <th width="200px" style="text-align:center">Submission Deadline</th>
+      </tr>
       {% for conference in object_list %}
-        <li>
-          {{ conference.name }}, {{ conference.acronym }}
-        </li>
+        <tr>
+          <td>{{ conference.conference_id.acronym }}</td>
+          <td>{{ conference.conference_id.name }}</td>
+          <td>{{ conference.conference_id.city}}, {{conference.conference_id.country}}</td>
+          <td>{{ conference.submission_deadline}}</td>
+        </tr>
       {% endfor %}
-    </ul>
+    </table>
   {% else %}
       <p>There are no conferences matching your search.</p>
   {% endif %}
