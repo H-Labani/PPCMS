@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<p>You can add members to the programm committee by filling the form below with their email address.</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save">
+</form>
+
+
+{% endblock %}

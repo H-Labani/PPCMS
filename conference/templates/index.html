@@ -12,4 +12,13 @@
   {% else %}
     <p>You are not registered in any conference.</p>
   {% endif %}
+
+<h2>My invitations:</h2>
+  <p>{% if invitations_list %}</p>
+    <ul>
+    {% for invitation in invitations_list %}
+      <li> {{ invitation.conference.name}} : {{ invitation.role }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
 {% endblock %}

@@ -1,15 +1,11 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import AuthenticationForm
+from account.models import CustomUser
 
 
-class SignUpForm(UserCreationForm):
-    first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
-    last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
-    email = forms.EmailField(max_length=254, help_text='Required. Provide a valid email address.')
-
-    class Meta:
-        model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
-
+class InvitePCMForm(forms.Form):
+    invitee_email = forms.EmailField(max_length=254, help_text='Required. Provide a valid email address.', required=True)
+    roles = (
+        ('1','chair'),
+        ('2','member'),
+    )
+    role = forms.ChoiceField(choices= roles)

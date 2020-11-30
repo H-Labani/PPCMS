@@ -16,6 +16,7 @@ class CFPView(ListView):
         return queryset
 
 
+"""
 class CFPSearchResult(ListView):
     model = Conference
     template_name = "cfp_search_result.html"
@@ -23,3 +24,4 @@ class CFPSearchResult(ListView):
     def get_queryset(self):
         queryset = Conference.objects.filter(name__icontains=self.request.GET.get('search_term'), cfp__cfp_active=True)
         return queryset
+"""

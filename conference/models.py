@@ -3,6 +3,8 @@ import uuid
 from django.urls import reverse
 from datetime import date
 from account.models import CustomUser
+#from invitations.models import Invitation
+
 
 class Conference(models.Model):
     """" This is the class for the conference model/table"""
@@ -25,3 +27,19 @@ class Conference(models.Model):
     def get_absolute_url(self):
         """Returns the url to access a particular instance of the model."""
         return reverse('conference-detail', args=[str(self.CID)])
+
+
+class ConferencePCMInvitations(models.Model):
+    invitee = models.EmailField()
+    inviter = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='inviter')
+    invitation_date = models.DateField(default=date.today)
+    conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='conference_invitation')
+    role = models.CharField(max_length=1, choices=(('1','chair'),('2','member')), default='2')
+    accepted = models.BooleanField(default=False)
+
+    #check if the invitation is expired i.e. 3 days has passed.
+    def invitationExpired(self):
+        if self.invitation_date < date.today():
+            return True
+        else:
+            return False
