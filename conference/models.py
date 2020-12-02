@@ -34,15 +34,21 @@ class ConferencePCMInvitations(models.Model):
     inviter = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='inviter')
     invitation_date = models.DateField(default=date.today)
     conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='conference_invitation')
-    role = models.CharField(max_length=1, choices=(('1','chair'),('2','member')), default='2')
+    role = models.IntegerField(max_length=1, choices=((1,'chair'),(2,'member')), default=2)
     accepted = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('conference', 'invitee',)
 
     #check if the invitation is expired i.e. 3 days has passed.
-    def invitationExpired(self):
+    def invitation_expired(self):
         if self.invitation_date < date.today():
             return True
         else:
             return False
+
+    def get_roles_str(self):
+        if (self.role == 1):
+            return "chair"
+        elif (self.role == 2):
+            return "member"

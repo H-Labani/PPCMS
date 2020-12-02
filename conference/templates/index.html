@@ -17,7 +17,7 @@
 <h2>My invitations:</h2>
     <ul>
     {% for invitation in invitations_list %}
-      <li> {{ invitation.conference.name}} : {{ invitation.role }}</li>
+      <li> {{ invitation.conference.name}} : {{ invitation.get_roles_str }}</li>
     {% endfor %}
     </ul>
   {% endif %}
