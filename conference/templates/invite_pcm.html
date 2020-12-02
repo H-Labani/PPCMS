@@ -1,9 +1,12 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-
+{% if messages %}
+    {% for message in messages %}
+    <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{message.message}}</p>
+    {% endfor %}
+{% endif %}
 <p>You can add members to the programm committee by filling the form below with their email address.</p>
-
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}

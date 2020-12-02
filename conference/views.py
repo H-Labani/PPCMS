@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import generic
 from conference.models import Conference
 from django.contrib.auth.decorators import login_required
@@ -12,7 +12,7 @@ from account.models import CustomUser
 from invitations.utils import get_invitation_model
 from .forms import InvitePCMForm
 from .models import ConferencePCMInvitations
-
+from django.contrib import messages
 
 @login_required
 def index(request):
@@ -72,7 +72,6 @@ class ConferenceDelete(LoginRequiredMixin ,DeleteView):
 
 # Invite PCM to the conference view
 class InvitePCMView(LoginRequiredMixin, FormView):
-
     form_class = InvitePCMForm
     template_name = 'invite_pcm.html'
     success_url = 'invite_pcm_outcome.html'
@@ -81,6 +80,11 @@ class InvitePCMView(LoginRequiredMixin, FormView):
         email = form.cleaned_data['invitee_email']
         role = form.cleaned_data['role']
         conference = Conference.objects.get(CID = self.kwargs['pk'])
+        invitation_exist = ConferencePCMInvitations.objects.filter(invitee=email, conference=conference).count()
+        if (invitation_exist > 0):
+            messages.error(self.request, 'An invitation has already been sent to '+ email)
+            return super(InvitePCMView, self).form_valid(form)
+        messages.success(self.request, email +' has been invited.')
         try:
             user = CustomUser.objects.get(email=email)
             ConferencePCMInvitations.objects.create(inviter = self.request.user, invitee= email, conference = conference, role = role)
@@ -90,5 +94,7 @@ class InvitePCMView(LoginRequiredMixin, FormView):
             invite.send_invitation(self.request)
             ConferencePCMInvitations.objects.create(inviter = self.request.user, invitee= email, conference = conference, role = role)
             return super().form_valid(form)
-        
-        return super().form_valid(form)
+        return super(InvitePCMView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('invite-pcm', kwargs={'pk':self.kwargs['pk']})

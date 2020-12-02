@@ -41,7 +41,13 @@ INSTALLED_APPS = [
     'account',
     'cfp',
     'guardian',
+    'invitations',
+    'django.contrib.sites', # added for the fix shown above SITE_ID
+
 ]
+
+# This was added along with django.contrib.sites to resolve an error after installing the invitations app.
+SITE_ID=1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -141,3 +147,6 @@ AUTHENTICATION_BACKENDS = (
     'account.backend.EmailBackend', # this is a modified backend making email the log in credintial along with a password.
     'guardian.backends.ObjectPermissionBackend',
 )
+
+# django-invitations configurations:
+INVITATIONS_SIGNUP_REDIRECT = '/account/register'

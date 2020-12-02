@@ -37,6 +37,9 @@ class ConferencePCMInvitations(models.Model):
     role = models.CharField(max_length=1, choices=(('1','chair'),('2','member')), default='2')
     accepted = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = ('conference', 'invitee',)
+
     #check if the invitation is expired i.e. 3 days has passed.
     def invitationExpired(self):
         if self.invitation_date < date.today():
