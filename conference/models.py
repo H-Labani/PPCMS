@@ -1,9 +1,12 @@
 from django.db import models
 import uuid
 from django.urls import reverse
-from datetime import date
 from account.models import CustomUser
-#from invitations.models import Invitation
+
+from datetime import timedelta
+from django.db.models import Q
+from django.conf import settings
+from django.utils import timezone
 
 
 class Conference(models.Model):
@@ -15,8 +18,8 @@ class Conference(models.Model):
     venue = models.CharField(max_length=200, help_text="Enter the venue of the conference", null=True) # Location
     city = models.CharField(max_length=200, help_text="Enter the city of the conference", default="") # Location
     country = models.CharField(max_length=200, help_text="Enter the country/region of the conference", default="") # Location
-    start_date = models.DateField(help_text="Enter the start date of the conference", default=date.today, blank=True) # The conference data
-    end_date = models.DateField(help_text="Enter the end date of the conference", default=date.today, blank=True) # The conference data
+    start_date = models.DateField(help_text="Enter the start date of the conference", default=timezone.now, blank=True) # The conference data
+    end_date = models.DateField(help_text="Enter the end date of the conference", default=timezone.now, blank=True) # The conference data
     phase = models.CharField(max_length=100, blank= True, default="")
     PCM = models.ManyToManyField(CustomUser, related_name="conference_PCM", blank=True, default="")
     chair = models.ForeignKey(CustomUser, on_delete=models.RESTRICT, related_name="conference_chair", default=1)
@@ -29,26 +32,38 @@ class Conference(models.Model):
         return reverse('conference-detail', args=[str(self.CID)])
 
 
+class ConferencePCMInvitationsManager(models.Manager):
+
+    def get_expired(self):
+        return self.filter(self.get_expured_query())
+
+    def get_active(self):
+        return self.exclude(self.get_expured_query())
+
+    def get_expured_query(self):
+        expiration_date = timezone.now() - timedelta(
+            days=settings.INVITATION_EXPIRY)
+        query = Q(accepted=True) | Q(invitation_date__lt=expiration_date)
+        return query
+
+    def delete_expired_confirmations(self):
+        self.all_expired().delete()
+
+
 class ConferencePCMInvitations(models.Model):
     invitee = models.EmailField()
     inviter = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='inviter')
-    invitation_date = models.DateField(default=date.today)
+    invitation_date = models.DateTimeField(default=timezone.now)
     conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='conference_invitation')
-    role = models.IntegerField(max_length=1, choices=((1,'chair'),(2,'member')), default=2)
+    role = models.IntegerField(choices=((1,'chair'),(2,'member')), default=2)
     accepted = models.BooleanField(default=False)
+    objects = ConferencePCMInvitationsManager()
 
     class Meta:
         unique_together = ('conference', 'invitee',)
 
-    #check if the invitation is expired i.e. 3 days has passed.
-    def invitation_expired(self):
-        if self.invitation_date < date.today():
-            return True
-        else:
-            return False
-
     def get_roles_str(self):
-        if (self.role == 1):
+        if self.role == 1:
             return "chair"
-        elif (self.role == 2):
+        elif self.role == 2:
             return "member"

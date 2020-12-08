@@ -19,7 +19,9 @@ def index(request):
 
     # List the conferences and invitations
     conferences_list = get_objects_for_user(request.user, 'conference.view_conference')
-    invitations_list = ConferencePCMInvitations.objects.filter(invitee = request.user.email)
+
+    # retrieve only the active invitations.
+    invitations_list = ConferencePCMInvitations.objects.get_active()
 
     # Create context
     context= {
