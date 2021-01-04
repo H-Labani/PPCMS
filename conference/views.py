@@ -32,6 +32,12 @@ def index(request):
     # Render the html page
     return render(request, 'index.html', context=context)
 
+@login_required
+def next_phase(request, pk):
+    conference = Conference.objects.get(CID = pk)
+    conference.phase = conference.phase+1
+    conference.save()
+    return redirect('conference-detail',pk)
 
 # Display the details of a conference using the CID
 class ConferenceDetailView(LoginRequiredMixin ,generic.DetailView):
