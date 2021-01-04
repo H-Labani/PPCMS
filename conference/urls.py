@@ -9,5 +9,6 @@ urlpatterns = [
     path('delete/<uuid:pk>/', views.ConferenceDelete.as_view(), name='conference-delete'),
     path('invite/<uuid:pk>/', views.InvitePCMView.as_view(), name='invite-pcm'),
     path('invite/success/<uuid:pk>/', views.InvitePCMView.as_view(), name='invitation-success'),
+    path('next_phase/<uuid:pk>/', views.next_phase, name='next-phase'),
 
 ]
