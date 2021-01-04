@@ -1,7 +1,7 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Title: {{ conference.name }}</h1>
+ <h1>Title: {{ conference.name }}</h1>
 
   <p><strong>Acronym:</strong> {{ conference.acronym }}</p>
   <p><strong>Web page:</strong> {{ conference.web_page }}</p>
@@ -11,11 +11,26 @@
   <p><strong>Start date:</strong> {{ conference.start_date }}</p>
   <p><strong>End date:</strong> {{ conference.end_date }}</p>
   <p><strong>Submission deadline:</strong> {{ conference.submission_deadline }}</p>
-  <p><strong>phase:</strong> {{ conference.phase }}</p>
+  <p><strong>phase:</strong> {{ conference.get_phase_display }}</p>
   <p><strong>Program committee members:</strong> {{ conference.PCM }}</p>
   <p><strong>Chair:</strong> {{ conference.chair }}</p>
 
-  <a href="{% url 'invite-pcm' pk=conference.CID %}"> Add Program Committee Members</a>
+  <p><a href="{% url 'invite-pcm' pk=conference.CID %}"> Add Program Committee Members</a></p>
+
+  {% if conference.phase == 0 %}
+    <a href="{% url 'next-phase' pk=conference.CID %}"> Switch to submission phase</a>
+  {% elif conference.phase == 1 %}
+    <a href="{% url 'next-phase' pk=conference.CID %}"> Switch to review phase</a>
+  {% elif conference.phase == 2 %}
+    <a href="{% url 'next-phase' pk=conference.CID %}"> Switch to discussion phase</a>
+  {% elif conference.phase == 3 %}
+    <a href="{% url 'next-phase' pk=conference.CID %}"> Switch to notification phase</a>
+  {% endif %}
+
+    {% if conference.phase == 1 %}
+    <a href="{% url 'next-phase' pk=conference.CID %}"> Submit a paper</a>
+    {% endif %}
+
 {% endblock %}
 
     {% block sidebar_conferences %} {% endblock %}
