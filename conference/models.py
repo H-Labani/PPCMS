@@ -67,3 +67,16 @@ class ConferencePCMInvitations(models.Model):
             return "chair"
         elif self.role == 2:
             return "member"
+
+
+class ConferenceSubmissions(models.Model):
+    conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='conference')
+    authors = models.ManyToManyField(CustomUser, related_name='authors')
+    title = models.CharField(max_length=200)
+    abstract = models.CharField(max_length=1000)
+    submission_date = models.DateTimeField(default=timezone.now)
+    paper_file = models.FileField()
+
+    def get_absolute_url(self):
+        return reverse('submission-detail', args=[self.id])
+

@@ -16,7 +16,7 @@
   <p><strong>Chair:</strong> {{ conference.chair }}</p>
 
   <p><a href="{% url 'invite-pcm' pk=conference.CID %}"> Add Program Committee Members</a></p>
-
+<p>
   {% if conference.phase == 0 %}
     <a href="{% url 'next-phase' pk=conference.CID %}"> Switch to submission phase</a>
   {% elif conference.phase == 1 %}
@@ -26,9 +26,9 @@
   {% elif conference.phase == 3 %}
     <a href="{% url 'next-phase' pk=conference.CID %}"> Switch to notification phase</a>
   {% endif %}
-
+</p>
     {% if conference.phase == 1 %}
-    <a href="{% url 'next-phase' pk=conference.CID %}"> Submit a paper</a>
+    <p><a href="{% url 'paper-submit' pk=conference.CID %}"> Submit a paper</a></p>
     {% endif %}
 
 {% endblock %}

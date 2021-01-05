@@ -1,23 +1,22 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.views import generic
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from conference.models import Conference
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse, reverse_lazy
 from guardian.shortcuts import assign_perm, get_objects_for_user
 from django.contrib.auth.models import Group
 from account.models import CustomUser
 from invitations.utils import get_invitation_model
 from .forms import InvitePCMForm
-from .models import ConferencePCMInvitations
+from .models import ConferencePCMInvitations, ConferenceSubmissions
 from django.contrib import messages
 
 @login_required
 def index(request):
 
-    # List the conferences and invitations
+    # List the conferences
     conferences_list = get_objects_for_user(request.user, 'conference.view_conference')
 
     # retrieve only the active invitations.
@@ -40,7 +39,7 @@ def next_phase(request, pk):
     return redirect('conference-detail',pk)
 
 # Display the details of a conference using the CID
-class ConferenceDetailView(LoginRequiredMixin ,generic.DetailView):
+class ConferenceDetailView(LoginRequiredMixin ,DetailView):
     model = Conference
 
     def get_queryset(self):
@@ -106,3 +105,37 @@ class InvitePCMView(LoginRequiredMixin, FormView):
 
     def get_success_url(self):
         return reverse('invite-pcm', kwargs={'pk':self.kwargs['pk']})
+
+# This class represent the paper submission view
+class SubmitAPaper(LoginRequiredMixin, CreateView):
+    model = ConferenceSubmissions
+    fields = ['authors', 'title', 'abstract', 'paper_file']
+
+    def form_valid(self, form):
+        submission = form.save(commit=False)
+        submission.conference = Conference.objects.get(CID = self.kwargs['pk']) # add the conference instance to the submission
+        submission.save()
+        return super(SubmitAPaper,self).form_valid(submission)
+
+    def get_success_url(self):
+        return reverse('index') # I will change this later to redirect the user to either the submissions page or the submission detail page. I am in favor of the latter.
+
+
+class SubmissionsList(LoginRequiredMixin, ListView):
+    model = ConferenceSubmissions
+    context_object_name = 'my_submissions_list'
+
+    def get_queryset(self):
+        queryset = ConferenceSubmissions.objects.filter(authors=self.request.user)
+        return queryset
+
+class SubmissionDetails(LoginRequiredMixin, DetailView):
+    model = ConferenceSubmissions
+
+class SubmissionUpdate(LoginRequiredMixin, UpdateView):
+    model = ConferenceSubmissions
+    fields = ['authors', 'title', 'abstract', 'paper_file']
+
+
+class SubmissionDelete(LoginRequiredMixin, DeleteView):
+    model = ConferenceSubmissions

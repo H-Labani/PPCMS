@@ -10,5 +10,8 @@ urlpatterns = [
     path('invite/<uuid:pk>/', views.InvitePCMView.as_view(), name='invite-pcm'),
     path('invite/success/<uuid:pk>/', views.InvitePCMView.as_view(), name='invitation-success'),
     path('next_phase/<uuid:pk>/', views.next_phase, name='next-phase'),
+    path('submit_a_paper/<uuid:pk>/', views.SubmitAPaper.as_view(), name='paper-submit'),
+    path('my_submissions/', views.SubmissionsList.as_view(), name='my-submissions'),
+    path('submission<pk>', views.SubmissionDetails.as_view(), name='submission-detail'),
 
 ]
