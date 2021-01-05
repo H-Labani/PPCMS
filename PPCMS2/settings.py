@@ -150,3 +150,8 @@ AUTHENTICATION_BACKENDS = (
 
 # django-invitations configurations:
 INVITATIONS_SIGNUP_REDIRECT = '/account/register'
+INVITATION_EXPIRY = 3
+
+# This is the location where submissions will be stored.
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
