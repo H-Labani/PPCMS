@@ -53,7 +53,7 @@ class ConferencePCMInvitationsManager(models.Manager):
 class ConferencePCMInvitations(models.Model):
     invitee = models.EmailField()
     inviter = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='inviter')
-    invitation_date = models.DateTimeField(default=timezone.now)
+    invitation_date = models.DateField(default=timezone.now)
     conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='conference_invitation')
     role = models.IntegerField(choices=((1,'chair'),(2,'member')), default=2)
     accepted = models.BooleanField(default=False)
@@ -74,8 +74,8 @@ class ConferenceSubmissions(models.Model):
     authors = models.ManyToManyField(CustomUser, related_name='authors')
     title = models.CharField(max_length=200)
     abstract = models.CharField(max_length=1000)
-    submission_date = models.DateTimeField(default=timezone.now)
-    paper_file = models.FileField()
+    submission_date = models.DateField(default=timezone.now)
+    paper_file = models.FileField(upload_to='submissions/')
 
     def get_absolute_url(self):
         return reverse('submission-detail', args=[self.id])

@@ -107,7 +107,7 @@ class InvitePCMView(LoginRequiredMixin, FormView):
         return reverse('invite-pcm', kwargs={'pk':self.kwargs['pk']})
 
 # This class represent the paper submission view
-class SubmitAPaper(LoginRequiredMixin, CreateView):
+class SubmissionCreate(LoginRequiredMixin, CreateView):
     model = ConferenceSubmissions
     fields = ['authors', 'title', 'abstract', 'paper_file']
 
@@ -115,7 +115,8 @@ class SubmitAPaper(LoginRequiredMixin, CreateView):
         submission = form.save(commit=False)
         submission.conference = Conference.objects.get(CID = self.kwargs['pk']) # add the conference instance to the submission
         submission.save()
-        return super(SubmitAPaper,self).form_valid(submission)
+        form.save_m2m()
+        return super(SubmissionCreate,self).form_valid(submission)
 
     def get_success_url(self):
         return reverse('index') # I will change this later to redirect the user to either the submissions page or the submission detail page. I am in favor of the latter.
@@ -139,3 +140,6 @@ class SubmissionUpdate(LoginRequiredMixin, UpdateView):
 
 class SubmissionDelete(LoginRequiredMixin, DeleteView):
     model = ConferenceSubmissions
+
+    def get_success_url(self):
+        return reverse('my-submissions')

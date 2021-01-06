@@ -17,7 +17,7 @@
         <ul class="sidebar-nav">
           {% if request.user.is_authenticated %}
           <li><a href="{% url 'index' %}">My confrences</a></li>
-          <li><a href="{% url 'my-submissions' %}">My submissions (not working)</a></li>
+          <li><a href="{% url 'my-submissions' %}">My submissions</a></li>
           <li><a href="{% url 'conference-create' %}">Create a conference</a></li>
           <li><a href="{% url 'cfp-search'%}">CFP</a></li>
         </ul>
