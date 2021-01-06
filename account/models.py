@@ -7,3 +7,6 @@ from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
+
+    def __str__(self):
+        return "%s, %s" % (self.last_name, self.first_name)
