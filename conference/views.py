@@ -9,7 +9,7 @@ from guardian.shortcuts import assign_perm, get_objects_for_user
 from django.contrib.auth.models import Group
 from account.models import CustomUser
 from invitations.utils import get_invitation_model
-from .forms import InvitePCMForm
+from .forms import InvitePCMForm, AddReviewersForm
 from .models import ConferencePCMInvitations, ConferenceSubmissions
 from django.contrib import messages
 
@@ -125,13 +125,20 @@ class SubmissionCreate(LoginRequiredMixin, CreateView):
 class SubmissionsList(LoginRequiredMixin, ListView):
     model = ConferenceSubmissions
     context_object_name = 'my_submissions_list'
+    template_name = 'my_submissions_list'
 
     def get_queryset(self):
         queryset = ConferenceSubmissions.objects.filter(authors=self.request.user)
         return queryset
 
+class MySubmissionDetails(LoginRequiredMixin, DetailView):
+    model = ConferenceSubmissions
+    template_name = 'my_submission_details.html'
+
+
 class SubmissionDetails(LoginRequiredMixin, DetailView):
     model = ConferenceSubmissions
+    template_name = 'conference/conference_submission_details.html'
 
 class SubmissionUpdate(LoginRequiredMixin, UpdateView):
     model = ConferenceSubmissions
@@ -143,3 +150,40 @@ class SubmissionDelete(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse('my-submissions')
+
+class ViewConferenceSubmissions(LoginRequiredMixin, ListView):
+    model = ConferenceSubmissions
+    context_object_name = 'my_submissions_list'
+
+    def get_queryset(self):
+        queryset = ConferenceSubmissions.objects.filter(conference=self.kwargs['pk'])
+        return queryset
+
+
+class AddAReviewer(LoginRequiredMixin, FormView):
+    model = ConferenceSubmissions
+    template_name = 'conference/add_reviewer.html'
+    form_class = AddReviewersForm
+
+
+    def get_context_data(self, **kwargs):
+        context = super(AddAReviewer, self).get_context_data(**kwargs)
+        current_reviewers = ConferenceSubmissions.objects.get(pk = self.kwargs['pk'])
+        context['current_reviewers'] = current_reviewers
+        return context
+
+    def get_success_url(self):
+        return reverse('submission-details', kwargs={'pk':self.kwargs['pk']})
+
+    def form_valid(self, form):
+        reviewers = form.cleaned_data['reviewers']
+        submission = ConferenceSubmissions.objects.get(pk = self.kwargs['pk'])
+        for reviewer in reviewers:
+            submission.reviewers.add(reviewer)
+        print(submission.id)
+        return super(AddAReviewer, self).form_valid(form)
+
+def delete_reviewer(request, submid, reviewerid):
+    submission = ConferenceSubmissions.objects.get(pk=submid)
+    submission.reviewers.remove(CustomUser.objects.get(pk=reviewerid))
+    return redirect('submission-details', pk=submid)
