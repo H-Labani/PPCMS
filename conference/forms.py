@@ -1,5 +1,6 @@
 from django import forms
 from account.models import CustomUser
+from .models import ConferenceSubmissions
 
 
 class InvitePCMForm(forms.Form):
@@ -9,3 +10,13 @@ class InvitePCMForm(forms.Form):
         (2,'member'),
     )
     role = forms.ChoiceField(choices= roles)
+
+
+class AddReviewersForm(forms.Form):
+
+    class Meta:
+        model = ConferenceSubmissions
+        fields = ['reviewers']
+
+    reviewers = forms.ModelMultipleChoiceField(queryset=CustomUser.objects.all(), label= 'Reviewers')
+
