@@ -33,8 +33,8 @@ class Conference(models.Model):
 
 
 class ConferenceUserRoles(models.Model):
-    conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='role_conference')
-    user = models.ForeignKey(CustomUser, on_delete=models.RESTRICT, related_name='role_user')
+    role_conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='role_conference')
+    role_user = models.ForeignKey(CustomUser, on_delete=models.RESTRICT, related_name='role_user')
 
     roles_choices = {(1, 'chair'),
                      (2, 'reviewer'),
@@ -43,7 +43,7 @@ class ConferenceUserRoles(models.Model):
     role = models.CharField(choices=roles_choices, max_length=10)
 
     class Meta:
-        unique_together = ('conference', 'user', 'role')
+        unique_together = ('role_conference', 'role_user', 'role')
 
 
 class ConferencePCMInvitationsManager(models.Manager):
