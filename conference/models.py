@@ -13,7 +13,7 @@ class Conference(models.Model):
     """" This is the class for the conference model/table"""
     CID = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) #The Conference ID
     name = models.CharField(max_length=200, help_text='Enter the conference name') #The conference name
-    acronym = models.CharField(max_length=50, help_text='Enter the Acronym of the conferece', null=True) #The conference Acronym
+    acronym = models.CharField(max_length=50, help_text='Enter the Acronym of the conference', null=True) #The conference Acronym
     web_page = models.URLField(max_length=200, help_text='Enter the web page of your conference', default="") #The conference web page
     venue = models.CharField(max_length=200, help_text="Enter the venue of the conference", null=True) # Location
     city = models.CharField(max_length=200, help_text="Enter the city of the conference", default="") # Location
@@ -30,6 +30,20 @@ class Conference(models.Model):
     def get_absolute_url(self):
         """Returns the url to access a particular instance of the model."""
         return reverse('conference-detail', args=[str(self.CID)])
+
+
+class ConferenceUserRoles(models.Model):
+    conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='role_conference')
+    user = models.ForeignKey(CustomUser, on_delete=models.RESTRICT, related_name='role_user')
+
+    roles_choices = {(1, 'chair'),
+                     (2, 'reviewer'),
+                     (3, 'author')}
+
+    role = models.CharField(choices=roles_choices, max_length=10)
+
+    class Meta:
+        unique_together = ('conference', 'user', 'role')
 
 
 class ConferencePCMInvitationsManager(models.Manager):
@@ -52,10 +66,10 @@ class ConferencePCMInvitationsManager(models.Manager):
 
 class ConferencePCMInvitations(models.Model):
     invitee = models.EmailField()
-    inviter = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='inviter')
+    inviter = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='invitation_inviter')
     invitation_date = models.DateField(default=timezone.now)
-    conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='conference_invitation')
-    role = models.IntegerField(choices=((1,'chair'),(2,'member')), default=2)
+    conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='invitation_conference')
+    role = models.IntegerField(choices=((1,'chair'),(2,'member'),), default=2)
     accepted = models.BooleanField(default=False)
     objects = ConferencePCMInvitationsManager()
 
@@ -70,13 +84,14 @@ class ConferencePCMInvitations(models.Model):
 
 
 class ConferenceSubmissions(models.Model):
-    conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='conference')
-    authors = models.ManyToManyField(CustomUser, related_name='authors')
+    conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='submission_conference')
+    authors = models.ManyToManyField(CustomUser, related_name='submission_authors')
     title = models.CharField(max_length=200)
     abstract = models.CharField(max_length=1000)
     submission_date = models.DateField(default=timezone.now)
     paper_file = models.FileField(upload_to='submissions/')
+    reviewers = models.ManyToManyField(CustomUser, related_name='submission_reviewers')
 
     def get_absolute_url(self):
-        return reverse('submission-detail', args=[self.id])
+        return reverse('submission-details', args=[self.id])
 
