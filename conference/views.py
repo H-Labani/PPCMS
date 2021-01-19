@@ -10,7 +10,7 @@ from django.contrib.auth.models import Group
 from account.models import CustomUser
 from invitations.utils import get_invitation_model
 from .forms import InvitePCMForm, AddReviewersForm
-from .models import ConferencePCMInvitations, ConferenceSubmissions
+from .models import ConferencePCMInvitations, ConferenceSubmissions, ConferenceUserRoles
 from django.contrib import messages
 
 @login_required
