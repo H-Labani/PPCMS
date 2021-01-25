@@ -15,7 +15,7 @@
     <p><strong>Program committee members:</strong> {{ conference.PCM }}</p>
     <p><strong>Chair:</strong> {{ conference.chair }}</p>
 
-    <a href="{% url 'invite-pcm' pk=conference.CID %}"> <button> Program Committee Members</button></a>
+    <a href="{% url 'invite-pcm' pk=conference.CID %}"> <button> Manage program committee members</button></a>
 
       {% if conference.phase == 0 %}
         <a href="{% url 'next-phase' pk=conference.CID %}"> <button> Switch to submission phase </button></a>
@@ -29,10 +29,7 @@
 
 
     <a href="{% url 'view-submissions' pk=conference.CID %}"> <button>  View submissions </button></a>
-    {% if conference.phase == 1 %}
-    <a href="{% url 'paper-submit' pk=conference.CID %}"> <button> Submit a paper </button></a>
-    {% endif %}
-<a href="{% url 'conference-delete' pk=conference.CID %}"> <button> Delete the conference</button> </a>
+    <a href="{% url 'conference-delete' pk=conference.CID %}"> <button> Delete the conference</button> </a>
 
 {% endblock %}
 

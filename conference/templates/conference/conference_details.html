@@ -1,0 +1,34 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Title: {{ conference.name }}</h1>
+
+    <p><strong>Acronym:</strong> {{ conference.acronym }}</p>
+    <p><strong>Web page:</strong> {{ conference.web_page }}</p>
+    <p><strong>Venue:</strong> {{ conference.venue }}</p>
+    <p><strong>City:</strong> {{ conference.city }}</p>
+    <p><strong>Country:</strong> {{ conference.country }}</p>
+    <p><strong>Start date:</strong> {{ conference.start_date }}</p>
+    <p><strong>End date:</strong> {{ conference.end_date }}</p>
+    <p><strong>Submission deadline:</strong> {{ conference.submission_deadline }}</p>
+    <p><strong>phase:</strong> {{ conference.get_phase_display }}</p>
+    <p><strong>Chair:</strong> {{ conference.chair }}</p>
+    <p><strong>Program committee members:</strong>
+        {% if conference.PCM.count > 0 %}
+            <ul>
+                {% for member in conference.PCM.all %}
+                <li>{{member}}</li>
+                {%endfor%}
+            </ul>
+        {% else %}
+            No program committee members have been added.
+        {% endif %}
+    </p>
+
+    {% if conference.phase == 1 %}
+    <a href="{% url 'paper-submit' pk=conference.CID %}"> <button> Submit a paper </button></a>
+    {% endif %}
+
+{% endblock %}
+
+{% block sidebar_conferences %} {% endblock %}

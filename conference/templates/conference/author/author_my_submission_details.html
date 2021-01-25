@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+ <h1>{{ conferencesubmission.conference.name }}</h1>
+
+  <p><strong>Title:</strong> {{ conferencesubmission.title }}</p>
+  <p><strong>Authors:</strong>
+   {% for author in conferencesubmission.authors.all %}
+   {{author}}
+   <br/>
+   {% endfor%}
+  </p>
+  <p><strong>Abstract:</strong> {{ conferencesubmission.abstract }}</p>
+  <p><strong>File:</strong> <a href="{{ conferencesubmission.paper_file.url }}"> download file</a></p>
+  <p><strong>Submission date:</strong> {{ conferencesubmission.submission_date }}</p>
+
+<p><a href="{% url 'submission-update' pk=conferencesubmission.pk %}">Update submission</a></p>
+<p><a href="{% url 'submission-delete' pk=conferencesubmission.pk %}">Delete submission</a></p>
+
+{% endblock %}
+
+    {% block sidebar_conferences %} {% endblock %}

@@ -6,8 +6,17 @@
   <p>{% if conferences_list %}</p>
     <ul>
     {% for conference in conferences_list %}
-      <li> <a href="{{conference.get_absolute_url}}"> {{ conference.name }}</a></li>
+        <li> <a href="{{conference.get_absolute_url}}">{{ conference.name }}</a>
+          {% for role in conference.role_conference.all %}
+            {% if role.role == 1 %}
+                <a href="{% url 'conference-manage' pk=conference.pk %}"> {{role.get_role_display}} view </a>
+            {% elif role.role == 2%}
+                <a href="{% url 'reviewer-assigned-submissions' pk=conference.pk %}"> {{role.get_role_display}} view</a>
+            {% endif %}
+          {% endfor %}
+      </li>
     {% endfor %}
+
     </ul>
   {% else %}
     <p>You are not registered in any conference.</p>

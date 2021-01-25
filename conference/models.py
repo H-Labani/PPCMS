@@ -20,7 +20,7 @@ class Conference(models.Model):
     country = models.CharField(max_length=200, help_text="Enter the country/region of the conference", default="") # Location
     start_date = models.DateField(help_text="Enter the start date of the conference", default=timezone.now, blank=True) # The conference data
     end_date = models.DateField(help_text="Enter the end date of the conference", default=timezone.now, blank=True) # The conference data
-    phase = models.IntegerField(choices=((0,'registration'),(1,'submission'),(2,'review'),(3,'discussion'),(4,'notification')), default=0)
+    phase = models.IntegerField(choices=((1,'registration'),(2,'submission'),(3,'review'),(4,'discussion'),(5,'notification')), default=1)
     PCM = models.ManyToManyField(CustomUser, related_name="conference_PCM", blank=True, default="")
     chair = models.ForeignKey(CustomUser, on_delete=models.RESTRICT, related_name="conference_chair", default=1)
 
@@ -29,10 +29,10 @@ class Conference(models.Model):
 
     def get_absolute_url(self):
         """Returns the url to access a particular instance of the model."""
-        return reverse('conference-detail', args=[str(self.CID)])
+        return reverse('conference-details', args=[str(self.CID)])
 
 
-class ConferenceUserRoles(models.Model):
+class ConferenceUserRole(models.Model):
     role_conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='role_conference')
     role_user = models.ForeignKey(CustomUser, on_delete=models.RESTRICT, related_name='role_user')
 
@@ -40,7 +40,7 @@ class ConferenceUserRoles(models.Model):
                      (2, 'reviewer'),
                      (3, 'author')}
 
-    role = models.CharField(choices=roles_choices, max_length=10)
+    role = models.IntegerField(choices=roles_choices)
 
     class Meta:
         unique_together = ('role_conference', 'role_user', 'role')
@@ -64,7 +64,7 @@ class ConferencePCMInvitationsManager(models.Manager):
         self.all_expired().delete()
 
 
-class ConferencePCMInvitations(models.Model):
+class ConferencePCMInvitation(models.Model):
     invitee = models.EmailField()
     inviter = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='invitation_inviter')
     invitation_date = models.DateField(default=timezone.now)
@@ -83,15 +83,63 @@ class ConferencePCMInvitations(models.Model):
             return "member"
 
 
-class ConferenceSubmissions(models.Model):
+class ConferenceSubmission(models.Model):
     conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='submission_conference')
     authors = models.ManyToManyField(CustomUser, related_name='submission_authors')
     title = models.CharField(max_length=200)
-    abstract = models.CharField(max_length=1000)
+    abstract = models.TextField()
     submission_date = models.DateField(default=timezone.now)
     paper_file = models.FileField(upload_to='submissions/')
     reviewers = models.ManyToManyField(CustomUser, related_name='submission_reviewers')
 
+    def __str__(self):
+        return self.title
+
     def get_absolute_url(self):
         return reverse('submission-details', args=[self.id])
 
+
+class ConferenceSubmissionReview(models.Model):
+    review_conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='review_conference')
+    review_submission = models.ForeignKey(ConferenceSubmission, on_delete=models.CASCADE, related_name='review_submission')
+    review_reviewer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='review_reviewer' , default=1)
+    review_text = models.TextField()
+    scores = {
+        (-2, 'strong reject'),
+        (-1, 'weak reject'),
+        (0, 'borderline paper'),
+        (1, 'weak accept'),
+        (2, 'strong accept'),
+    }
+
+    confidence = {
+        (1, 'very low'),
+        (2, 'low'),
+        (3, 'normal'),
+        (4, 'high'),
+        (5, 'very high'),
+    }
+    review_score = models.IntegerField(choices=scores)
+    review_confidence = models.IntegerField(choices=confidence)
+    review_date_time = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ['review_date_time']
+
+    def __str__(self):
+        return self.review_submission.title
+
+class ConferenceSubmissionDiscussion(models.Model):
+    discussion_conference = models.ForeignKey(Conference, on_delete=models.CASCADE, related_name='discussion_conference')
+    discussion_submission = models.ForeignKey(ConferenceSubmission, on_delete=models.CASCADE,
+                                          related_name='discussion_submission')
+    discussion_reviewer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='discussion_reviewer',
+                                        default=1)
+    discussion_text = models.TextField()
+    discussion_date_time = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ['discussion_date_time']
+
+    def __str__(self):
+        return self.discussion_submission.title

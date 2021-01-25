@@ -1,0 +1,29 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1> {{ submission_details.conference.name }}</h1>
+
+    <p><strong>Title:</strong> {{ submission_details.title }}</p>
+
+    <p><strong>Abstract:</strong> {{ submission_details.abstract }}</p>
+    <p><strong>File:</strong> <a href="{{ submission_details.paper_file.url }}"> download file</a></p>
+    <p><strong>Submission date:</strong> {{ submission_details.submission_date }}</p>
+    <p><strong>Reviewers:</strong>   </p>
+    <ul>
+        {% for reviewer in submission_details.reviewers.all%}
+            <li> {{ reviewer }} </li>
+        {% endfor %}
+    </ul>
+
+        <form action="" method="post">
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+            <input type="submit" value="Submit">
+        </form>
+
+
+{% endblock %}
+
+{% block sidebar_conferences %} {% endblock %}
