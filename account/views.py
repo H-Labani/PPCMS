@@ -5,12 +5,6 @@ from django.urls import reverse_lazy
 from .forms import LoginForm, RegisterForm
 
 
-"""class LoginView(auth_views.LoginView):
-    form_class = LoginForm
-    template_name = 'account/login.html'
-"""
-
-
 class RegisterView(generic.CreateView):
     form_class = RegisterForm
     template_name = 'account/register.html'
