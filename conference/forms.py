@@ -20,3 +20,7 @@ class AddReviewersForm(forms.Form):
 
     reviewers = forms.ModelMultipleChoiceField(queryset=CustomUser.objects.all(), label= 'Reviewers')
 
+    # def __init__(self, *args, **kwargs):
+    #     super(AddReviewersForm, self).__init__(*args, **kwargs)
+    #     group_name = kwargs.pop('group')
+    #     self.fields['reviewers'].queryset= CustomUser.objects.filter(groups__name=group_name)

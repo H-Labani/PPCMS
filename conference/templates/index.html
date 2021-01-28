@@ -1,33 +1,52 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Welcome {{request.user.username}} to PPCMS </h1>
-  <h2>My conferences:</h2>
-  <p>{% if conferences_list %}</p>
-    <ul>
-    {% for conference in conferences_list %}
-        <li> <a href="{{conference.get_absolute_url}}">{{ conference.name }}</a>
-          {% for role in conference.role_conference.all %}
-            {% if role.role == 1 %}
-                <a href="{% url 'conference-manage' pk=conference.pk %}"> {{role.get_role_display}} view </a>
-            {% elif role.role == 2%}
-                <a href="{% url 'reviewer-assigned-submissions' pk=conference.pk %}"> {{role.get_role_display}} view</a>
-            {% endif %}
-          {% endfor %}
-      </li>
-    {% endfor %}
+    <h1>Welcome {{request.user.first_name}} to PPCMS </h1>
+    {% if not my_conferences and not conferences_list%}
+        <p> There are not conferences</p>
+    {% endif %}
 
-    </ul>
-  {% else %}
-    <p>You are not registered in any conference.</p>
-  {% endif %}
+    {% if my_conferences %}
+        <h2>My conferences:</h2>
+        <table border="1" style="width:400px">
+            <tr><th> Conference</th> <th>Role(s)</th></tr>
+            {% for conference in my_conferences %}
+                <tr><td><a href="{{conference.get_absolute_url}}">{{ conference.name }}</a></td> <td>
+                    {% for role in conference.role_conference.all %}
+                        {% if role.role == 1 and role.role_user == request.user %}
+                            <a href="{% url 'conference-manage' pk=conference.pk %}"> {{role.get_role_display}} view </a>
+                        {% elif role.role == 2 and role.role_user == request.user%}
+                            <a href="{% url 'reviewer-assigned-submissions' pk=conference.pk %}"> {{role.get_role_display}} view</a>
+                        {% endif %}
+                    {% endfor %}
+                </td></tr>
+            {% endfor %}
+        </table>
+    {% endif %}
 
-  <p>{% if invitations_list %}</p>
-<h2>My invitations:</h2>
-    <ul>
-    {% for invitation in invitations_list %}
-      <li> {{ invitation.conference.name}} : {{ invitation.get_roles_str }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
+<br />
+    {% if conferences_list %}
+        <h2>Conferences:</h2>
+        <ul>
+            {% for conference in conferences_list %}
+                <li><a href="{{conference.get_absolute_url}}">{{ conference.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <p>{% if invitations_list %}</p>
+        <h2>My invitations:</h2>
+        <table border="1" style="width:400px">
+            <tr><th>Conference</th> <th>Role</th> <th>Action</th></tr>
+            {% for invitation in invitations_list %}
+                <tr>
+                    <td> {{ invitation.conference.name}}</td>
+                    <td>{{ invitation.get_roles_str }}</td>
+                    <td><a href="{% url 'invite-pcm-accept' inviteid=invitation.pk %}"><button>Accept</button></a>
+                        <a href="{% url 'invite-pcm-reject' inviteid=invitation.pk %}"><button>Reject</button></a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
 {% endblock %}

@@ -14,11 +14,11 @@
     <p><strong>phase:</strong> {{ conference.get_phase_display }}</p>
     <p><strong>Chair:</strong> {{ conference.chair }}</p>
     <p><strong>Program committee members:</strong>
-        {% if conference.PCM.count > 0 %}
+        {% if PCM%}
             <ul>
-                {% for member in conference.PCM.all %}
-                <li>{{member}}</li>
-                {%endfor%}
+                {% for member in PCM %}
+                    <li> {{member}}</li>
+                {% endfor %}
             </ul>
         {% else %}
             No program committee members have been added.

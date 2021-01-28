@@ -24,6 +24,39 @@
   </p>
   <p><a href="{% url 'add-reviewer' pk=submission_details.pk %}"> Assign reviewers</a></p>
 
+    <br/>
+    <strong> Reviews:</strong>
+      {% for review in submission_details.review_submission.all %}
+          <table border="1" style="width:400px">
+              <tr><th colspan="2">Review {{ forloop.counter }}</th></tr>
+              <tr><td style="width:60px"> Reviewer:</td> <td> {{review.review_reviewer}}</td></tr>
+              <tr><td style="width:60px"> Review Date:</td> <td> {{review.review_date_time}}</td></tr>
+              <tr><td style="width:60px"> Score:</td> <td> {{review.get_review_score_display}}</td></tr>
+              <tr><td style="width:60px"> Expertise:</td> <td> {{review.get_review_confidence_display}}</td></tr>
+              <tr><td style="width:60px"> Overall review:</td> <td> {{review.review_text}}</td></tr>
+          </table>
+          </br>
+      {% endfor %}
+
+    {% for discussion in  submission_details.discussion_submission.all %}
+    <table border="1" style="width:400px">
+        <tr><th colspan="2">Comment {{ forloop.counter }}</th></tr>
+        <tr><td style="width:60px"> Reviewer:</td> <td> {{discussion.discussion_reviewer}}</td></tr>
+        <tr><td style="width:60px"> Review Date:</td> <td> {{discussion.discussion_date_time}}</td></tr>
+        <tr><td style="width:60px"> Overall review:</td> <td> {{discussion.discussion_text}}</td></tr>
+    </table>
+    </br>
+    {% endfor %}
+
+        <form action="" method="post">
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+            <input type="submit" value="Submit">
+        </form>
+
+
 {% endblock %}
 
     {% block sidebar_conferences %} {% endblock %}

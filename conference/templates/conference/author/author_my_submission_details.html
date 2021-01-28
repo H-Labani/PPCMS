@@ -14,6 +14,20 @@
   <p><strong>File:</strong> <a href="{{ conferencesubmission.paper_file.url }}"> download file</a></p>
   <p><strong>Submission date:</strong> {{ conferencesubmission.submission_date }}</p>
 
+  {% if conferencesubmission.decision == 1 or conferencesubmission.decision == 2 %}
+    <br/>
+<p> <strong> Paper decision:</strong> {{ conferencesubmission.get_decision_display }}</p>
+    <p><strong> Reviews:</strong></p>
+    <br/>
+
+      {% for review in conferencesubmission.review_submission.all %}
+          <table border="1" style="width:600px">
+              <tr><th colspan="2">Review {{ forloop.counter }}</th></tr>
+              <tr><td style="width:130px"> Overall review:</td> <td> {{review.review_text}}</td></tr>
+          </table>
+          </br>
+      {% endfor %}
+  {% endif %}
 <p><a href="{% url 'submission-update' pk=conferencesubmission.pk %}">Update submission</a></p>
 <p><a href="{% url 'submission-delete' pk=conferencesubmission.pk %}">Delete submission</a></p>
 

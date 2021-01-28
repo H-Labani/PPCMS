@@ -12,7 +12,17 @@
     <p><strong>End date:</strong> {{ conference.end_date }}</p>
     <p><strong>Submission deadline:</strong> {{ conference.submission_deadline }}</p>
     <p><strong>phase:</strong> {{ conference.get_phase_display }}</p>
-    <p><strong>Program committee members:</strong> {{ conference.PCM }}</p>
+    <p><strong>Program committee members:</strong>
+        {% if PCM%}
+            <ul>
+                {% for member in PCM %}
+                    <li> {{member}}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            No program committee members have been added.
+        {% endif %}
+    </p>
     <p><strong>Chair:</strong> {{ conference.chair }}</p>
 
     <a href="{% url 'invite-pcm' pk=conference.CID %}"> <button> Manage program committee members</button></a>

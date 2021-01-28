@@ -1,15 +1,17 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Welcome {{request.user.username}} to PPCMS </h1>
-  <h2>My submissions:</h2>
-  <p>{% if my_submissions_list %}</p>
-    <ul>
-    {% for submission in my_submissions_list %}
-      <li> <a href="{{submission.get_absolute_url}}"> {{ submission.title }}</a>
-      </li>
-    {% endfor %}
-    </ul>
+  <h2>Submissions:</h2>
+  <p>{% if submissions_list %}</p>
+    <table border="1" style="width:400px">
+        <tr><th>Title</th> <th>Submission date</th></tr>
+        {% for submission in submissions_list %}
+          <tr>
+            <td><a href="{% url 'chair-submission-details' pk=submission.pk %}">{{submission.title}}</a></td>
+            <td>{{submission.submission_date}}</td>
+          </tr>
+        {% endfor %}
+    </table>
   {% else %}
     <p>You do not have any submission.</p>
   {% endif %}

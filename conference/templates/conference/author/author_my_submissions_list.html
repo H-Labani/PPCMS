@@ -2,12 +2,22 @@
 
 {% block content %}
   <h2>My submissions:</h2>
-  <p>{% if my_submissions_list %}</p>
-    <ul>
-    {% for submission in my_submissions_list %}
-      <li> <a href="{% url 'submission-details' pk=submission.pk %}"> {{ submission.title }}</a></li>
-    {% endfor %}
-    </ul>
+  {% if my_submissions_list %}
+    <table border="1" style="width:1000px">
+        <tr><th>Conference</th> <th>Title</th> <th>Submission date</th><th>Decision</th></tr>
+        {% for submission in my_submissions_list %}
+          <tr>
+            <td>{{submission.conference.name}}</td>
+            <td><a href="{% url 'submission-details' pk=submission.pk %}">{{submission.title}}</a></td>
+            <td>{{submission.submission_date}}</td>
+            <td>
+                {% if submission.decision == 1 or submission.decision == 2 %}
+                    {{ submission.get_decision_display }}
+                {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+    </table>
   {% else %}
     <p>You do not have any submission.</p>
   {% endif %}

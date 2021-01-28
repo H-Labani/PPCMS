@@ -5,7 +5,9 @@
   <p>{% if reviewer_submissions_list %}</p>
     <ul>
     {% for submission in reviewer_submissions_list %}
-      <li> {{ submission.title }} <a href="{% url 'reviewer-submission-review' submid=submission.pk %}"> Submit a review</a>    <a href="{% url 'reviewer-submission-reviews-discussions' submid=submission.pk%}" >View reviews and discussions</a></li>
+      <li> {{ submission.title }}
+        <a href="{% url 'reviewer-submission-review' submid=submission.pk %}"> Submit a review</a>
+        <a href="{% url 'reviewer-submission-reviews-discussions' submid=submission.pk%}" >View reviews and discussions</a></li>
     {% endfor %}
     </ul>
   {% else %}
