@@ -25,14 +25,17 @@ urlpatterns = [
          name='reviewer-submission-reviews-discussions'),
 
     path('invite/<uuid:pk>/', views.InvitePCMView.as_view(), name='invite-pcm'),
-    path('invite/success/<uuid:pk>/', views.InvitePCMView.as_view(), name='invitation-success'),
+    path('invite/accept/<inviteid>', views.accept_invite, name='invite-pcm-accept'),
+    path('invite/reject/<inviteid>', views.reject_invite, name='invite-pcm-reject'),
+
+    #path('invite/success/<uuid:pk>/', views.InvitePCMView.as_view(), name='invitation-success'),
 
     #Author's URLs
     path('submit_a_paper/<uuid:pk>/', views.SubmissionCreate.as_view(), name='paper-submit'),
-    path('my_submissions/', views.SubmissionsList.as_view(), name='my-submissions'),
-    path('submission/<pk>', views.MySubmissionDetails.as_view(), name='submission-details'),
-    path('submission/update/<pk>', views.SubmissionUpdate.as_view(), name='submission-update'),
-    path('submission/delete/<pk>', views.SubmissionDelete.as_view(), name='submission-delete'),
+    path('my_submissions/', views.MySubmissionsList.as_view(), name='my-submissions'),
+    path('my_submission/<pk>', views.MySubmissionDetails.as_view(), name='submission-details'),
+    path('my_submission/update/<pk>', views.SubmissionUpdate.as_view(), name='submission-update'),
+    path('my_submission/delete/<pk>', views.SubmissionDelete.as_view(), name='submission-delete'),
 
 
 ]
